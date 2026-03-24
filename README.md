@@ -19,16 +19,6 @@ Model: GRU (Deep Learning - TensorFlow/Keras)
 Data Processing: Tokenization, Encoding, Padding
 Model Files: .h5 (trained model), .pkl (tokenizer/encoder)
 
-📂 Project Structure
-project/
-│
-├── app.py              # Flask backend
-├── index.html          # User interface
-├── model.h5            # Trained GRU model
-├── tokenizer.pkl       # Tokenizer file
-├── encoder.pkl         # Label encoder
-├── requirements.txt    # Dependencies
-└── README.md           # Project documentation
 📊 Dataset Details
 Total Records: 5572 messages
 Columns:
