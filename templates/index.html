@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Spam Detector</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+/* Glass Card */
+.card {
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 35px;
+    border-radius: 20px;
+    width: 420px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    animation: fadeIn 1s ease;
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 20px;
+}
+
+/* Input */
+textarea {
+    width: 100%;
+    height: 120px;
+    border-radius: 12px;
+    border: none;
+    padding: 12px;
+    font-size: 15px;
+    outline: none;
+    resize: none;
+}
+
+/* Button */
+button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(90deg, #00f2fe, #4facfe);
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+/* Loader */
+.loader {
+    margin-top: 15px;
+    display: none;
+}
+
+/* Result Box */
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    display: none;
+}
+
+.spam {
+    background: rgba(255, 75, 92, 0.2);
+    border: 1px solid #ff4b5c;
+}
+
+.not-spam {
+    background: rgba(0, 255, 174, 0.2);
+    border: 1px solid #00ffae;
+}
+
+/* Progress Bar */
+.progress {
+    margin-top: 10px;
+    height: 10px;
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    transition: 0.5s;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h1>AI Spam Detector</h1>
+    <p>Analyze messages instantly using GRU Deep Learning</p>
+
+    <textarea id="message" placeholder="Type your message here..."></textarea>
+
+    <button onclick="checkSpam()">Analyze Message</button>
+
+    <div class="loader" id="loader">⏳ Checking...</div>
+
+    <div class="result-box" id="resultBox">
+        <h3 id="resultText"></h3>
+        <p id="confidenceText"></p>
+
+        <div class="progress">
+            <div class="progress-bar" id="bar"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function checkSpam() {
+    let message = document.getElementById("message").value;
+
+    if(message.trim() === ""){
+        alert("Please enter a message!");
+        return;
+    }
+
+    document.getElementById("loader").style.display = "block";
+    document.getElementById("resultBox").style.display = "none";
+
+    fetch('/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({message: message})
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        document.getElementById("loader").style.display = "none";
+
+        let resultBox = document.getElementById("resultBox");
+        let resultText = document.getElementById("resultText");
+        let confidenceText = document.getElementById("confidenceText");
+        let bar = document.getElementById("bar");
+
+        resultBox.style.display = "block";
+
+        resultText.innerText = data.result;
+        confidenceText.innerText = "Confidence: " + data.confidence + "%";
+
+        if(data.result === "Spam"){
+            resultBox.className = "result-box spam";
+            bar.style.background = "#ff4b5c";
+        } else {
+            resultBox.className = "result-box not-spam";
+            bar.style.background = "#00ffae";
+        }
+
+        bar.style.width = data.confidence + "%";
+    });
+}
+</script>
+
+</body>
+</html>
