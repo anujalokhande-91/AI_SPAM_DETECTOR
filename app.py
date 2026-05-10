@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
@@ -24,10 +25,12 @@ patch_layer(GRU)
 
 app = Flask(__name__)
 
-with open('GRU_Tokenizer.pkl', 'rb') as f:
+BASE_DIR = Path(__file__).resolve().parent
+
+with open(BASE_DIR / 'GRU_Tokenizer.pkl', 'rb') as f:
     tokenizer = pickle.load(f)
 
-model = tf.keras.models.load_model('GRU_Spam_Detector.h5', compile=False)
+model = tf.keras.models.load_model(BASE_DIR / 'GRU_Spam_Detector.h5', compile=False)
 
 MAX_LEN = 100
 
