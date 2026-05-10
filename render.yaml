@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: ai-spam-detector
+    runtime: docker
+    dockerfilePath: Dockerfile
+    dockerContext: .
+    plan: free
+    autoDeployTrigger: commit
